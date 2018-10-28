@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
+  <title>Stock Price Simulator</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" rel="stylesheet" />
+  <link href="sps.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="btn-group buttons">
+    <a class="btn btn-lg btn-info" onclick="generate()" accesskey="g"><span class="glyphicon glyphicon-repeat"></span> <span style="text-decoration: underline">G</span>enerate</a>
+    <a class="btn btn-lg btn-info" onclick="play()" accesskey="w" id="play"><span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">W</span>atch</a>
+  </div>
+  <canvas id="canvas">Your browser doesn't support HTML5.</canvas>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="sps.js"></script>
+</body>
+
+</html>
