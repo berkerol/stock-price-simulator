@@ -13,13 +13,17 @@ let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
 gradient.addColorStop(0, color + '0.8)');
 gradient.addColorStop(1, color + '0.0)');
 
-let trends = [1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 5, 5, 8]; // 1, 2, 3, 5, 8
-let trendDurations = [5, 10, 20, 40, 60, 120]; // 20 trading days = 1 month
+let trends = [[-9, 3], [-7, 4], [-7, 4], [-5, 5], [-5, 5], [-5, 5], [-4, 7], [-4, 7], [-3, 9]];
+let trendPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+let volatilities = [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5, 8];
+let volatilityPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
 
 let currentDay;
 let currentPrice;
 let trend;
-let trendDuration;
+let trendPeriod;
+let volatility;
+let volatilityPeriod;
 let interval;
 
 let chart = new Chart(ctx, {
@@ -69,8 +73,8 @@ generate();
 window.addEventListener('resize', resizeHandler);
 
 function reset () {
-  trend = trends[Math.floor(Math.random() * trends.length)];
-  trendDuration = trendDurations[Math.floor(Math.random() * trendDurations.length)];
+  updateTrend();
+  updateVolatility();
   currentDay = 1;
   currentPrice = price;
   chart.data.labels = ['Trading Day ' + currentDay];
@@ -154,13 +158,25 @@ function animate () {
 }
 
 function update () {
-  if (currentDay++ % trendDuration === 0) {
-    trend = trends[Math.floor(Math.random() * trends.length)];
-    trendDuration = trendDurations[Math.floor(Math.random() * trendDurations.length)];
+  if (currentDay % trendPeriod === 0) {
+    updateTrend();
   }
-  currentPrice = Math.round((currentPrice + currentPrice * baseChange * trend * (Math.random() * 2 - 1)) * 100) / 100;
+  if (currentDay++ % volatilityPeriod === 0) {
+    updateVolatility();
+  }
+  currentPrice = Math.round(currentPrice + currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10 * 100) / 100;
   chart.data.labels.push('Trading Day ' + currentDay);
   chart.data.datasets[0].data.push(currentPrice);
+}
+
+function updateTrend () {
+  trend = trends[Math.floor(Math.random() * trends.length)];
+  trendPeriod = trendPeriods[Math.floor(Math.random() * trendPeriods.length)];
+}
+
+function updateVolatility () {
+  volatility = volatilities[Math.floor(Math.random() * volatilities.length)];
+  volatilityPeriod = volatilityPeriods[Math.floor(Math.random() * volatilityPeriods.length)];
 }
 
 function resizeHandler () {
