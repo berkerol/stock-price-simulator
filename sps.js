@@ -15,8 +15,22 @@ gradient.addColorStop(1, color + '0.0)');
 
 let trends = [[-9, 3], [-7, 4], [-7, 4], [-5, 5], [-5, 5], [-5, 5], [-4, 7], [-4, 7], [-3, 9]];
 let trendPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+let trendNames = {
+  3: 'Strong Down',
+  4: 'Weak Down',
+  5: 'Stable',
+  7: 'Weak Up',
+  9: 'Strong Up'
+};
 let volatilities = [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5, 8];
 let volatilityPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+let volatilityNames = {
+  1: 'Very Low',
+  2: 'Low',
+  3: 'Medium',
+  5: 'High',
+  8: 'Very High'
+};
 
 let currentDay;
 let currentPrice;
@@ -32,6 +46,8 @@ let chart = new Chart(ctx, {
     labels: [],
     datasets: [{
       data: [],
+      trends: [],
+      volatilities: [],
       backgroundColor: gradient,
       borderColor: color + '1.0)',
       pointBackgroundColor: color + '1.0)'
@@ -65,6 +81,28 @@ let chart = new Chart(ctx, {
           }
         }
       }]
+    },
+    tooltips: {
+      displayColors: false,
+      callbacks: {
+        label: function (tooltipItem, data) {
+          let change;
+          let percentChange;
+          if (tooltipItem.index === 0) {
+            change = 0;
+            percentChange = 0;
+          } else {
+            let prev = data.datasets[0].data[tooltipItem.index - 1];
+            change = tooltipItem.yLabel - prev;
+            percentChange = Math.round(change / prev * 10000) / 100;
+          }
+          return ['Price: $' + Math.round(tooltipItem.yLabel * 100) / 100,
+            'Change: ' + (change > 0 ? '+' : '') + Math.round(change * 100) / 100,
+            '% Change: ' + (percentChange > 0 ? '+' : '') + percentChange + '%',
+            'Trend: ' + trendNames[data.datasets[0].trends[tooltipItem.index][1]],
+            'Volatility: ' + volatilityNames[data.datasets[0].volatilities[tooltipItem.index]]];
+        }
+      }
     }
   }
 });
@@ -79,6 +117,8 @@ function reset () {
   currentPrice = price;
   chart.data.labels = ['Trading Day ' + currentDay];
   chart.data.datasets[0].data = [currentPrice];
+  chart.data.datasets[0].trends = [trend];
+  chart.data.datasets[0].volatilities = [volatility];
   window.clearInterval(interval);
 }
 
@@ -164,9 +204,11 @@ function update () {
   if (currentDay++ % volatilityPeriod === 0) {
     updateVolatility();
   }
-  currentPrice = Math.round(currentPrice + currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10 * 100) / 100;
+  currentPrice += currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10;
   chart.data.labels.push('Trading Day ' + currentDay);
   chart.data.datasets[0].data.push(currentPrice);
+  chart.data.datasets[0].trends.push(trend);
+  chart.data.datasets[0].volatilities.push(volatility);
 }
 
 function updateTrend () {
