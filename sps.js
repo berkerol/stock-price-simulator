@@ -6,6 +6,8 @@ canvas.height = window.innerHeight;
 
 let days = 250; // 250 trading days = 1 year
 let price = 50;
+let minPrice = 15;
+let maxPrice = 200;
 let baseChange = 0.01;
 let daysPerSecond = 3;
 let color = 'rgba(54, 162, 235, ';
@@ -204,7 +206,13 @@ function update () {
   if (currentDay++ % volatilityPeriod === 0) {
     updateVolatility();
   }
-  currentPrice += currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10;
+  let change = currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10;
+  currentPrice += change;
+  if (currentPrice < minPrice) {
+    currentPrice += Math.abs(change) * 2;
+  } else if (currentPrice > maxPrice) {
+    currentPrice -= Math.abs(change) * 2;
+  }
   chart.data.labels.push('Trading Day ' + currentDay);
   chart.data.datasets[0].data.push(currentPrice);
   chart.data.datasets[0].trends.push(trend);
