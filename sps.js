@@ -109,8 +109,23 @@ let chart = new Chart(ctx, {
   }
 });
 
+document.getElementById('days').value = days;
+document.getElementById('price').value = price;
+document.getElementById('min').value = minPrice;
+document.getElementById('max').value = maxPrice;
+document.getElementById('change').value = baseChange;
+document.getElementById('daysPerSecond').value = daysPerSecond;
 generate();
 window.addEventListener('resize', resizeHandler);
+
+function save () {
+  days = +document.getElementById('days').value;
+  price = +document.getElementById('price').value;
+  minPrice = +document.getElementById('min').value;
+  maxPrice = +document.getElementById('max').value;
+  baseChange = +document.getElementById('change').value;
+  daysPerSecond = +document.getElementById('daysPerSecond').value;
+}
 
 function reset () {
   updateTrend();
