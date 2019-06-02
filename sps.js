@@ -98,9 +98,9 @@ const chart = new Chart(ctx, {
             change = tooltipItem.yLabel - prev;
             percentChange = Math.round(change / prev * 10000) / 100;
           }
-          return ['Price: $' + Math.round(tooltipItem.yLabel * 100) / 100,
-            'Change: ' + (change > 0 ? '+' : '') + Math.round(change * 100) / 100,
-            '% Change: ' + (percentChange > 0 ? '+' : '') + percentChange + '%',
+          return [`Price: $${Math.round(tooltipItem.yLabel * 100) / 100}`,
+            `Change: ${change > 0 ? '+' : ''}${Math.round(change * 100) / 100}`,
+            `% Change: ${percentChange > 0 ? '+' : ''}${percentChange}%`,
             'Trend: ' + trendNames[data.datasets[0].trends[tooltipItem.index][1]],
             'Volatility: ' + volatilityNames[data.datasets[0].volatilities[tooltipItem.index]]];
         }
