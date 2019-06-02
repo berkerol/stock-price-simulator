@@ -118,14 +118,14 @@ document.getElementById('daysPerSecond').value = daysPerSecond;
 generate();
 window.addEventListener('resize', resizeHandler);
 
-function save () {
+window.save = function () {
   days = +document.getElementById('days').value;
   price = +document.getElementById('price').value;
   minPrice = +document.getElementById('min').value;
   maxPrice = +document.getElementById('max').value;
   baseChange = +document.getElementById('change').value;
   daysPerSecond = +document.getElementById('daysPerSecond').value;
-}
+};
 
 function reset () {
   updateTrend();
@@ -155,7 +155,7 @@ function generate () {
   fill();
 }
 
-function play () {
+window.play = function () {
   reset();
   const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'stop()');
@@ -169,23 +169,23 @@ function play () {
   pauseButton.innerHTML = '<span class="glyphicon glyphicon-pause"></span> <span style="text-decoration: underline">P</span>ause';
   playButton.parentNode.insertBefore(pauseButton, playButton);
   animate();
-}
+};
 
-function pause () {
+window.pause = function () {
   window.clearInterval(interval);
   const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'resume()');
   pauseButton.setAttribute('accesskey', 'r');
   pauseButton.innerHTML = '<span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">R</span>esume';
-}
+};
 
-function resume () {
+window.resume = function () {
   const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
   pauseButton.innerHTML = '<span class="glyphicon glyphicon-pause"></span> <span style="text-decoration: underline">P</span>ause';
   animate();
-}
+};
 
 function stop () {
   window.clearInterval(interval);
