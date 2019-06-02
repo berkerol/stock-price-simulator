@@ -1,6 +1,6 @@
 /* global Chart */
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -10,23 +10,23 @@ let minPrice = 15;
 let maxPrice = 200;
 let baseChange = 0.01;
 let daysPerSecond = 3;
-let color = 'rgba(54, 162, 235, ';
-let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+const color = 'rgba(54, 162, 235, ';
+const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
 gradient.addColorStop(0, color + '0.8)');
 gradient.addColorStop(1, color + '0.0)');
 
-let trends = [[-9, 3], [-7, 4], [-7, 4], [-5, 5], [-5, 5], [-5, 5], [-4, 7], [-4, 7], [-3, 9]];
-let trendPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
-let trendNames = {
+const trends = [[-9, 3], [-7, 4], [-7, 4], [-5, 5], [-5, 5], [-5, 5], [-4, 7], [-4, 7], [-3, 9]];
+const trendPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+const trendNames = {
   3: 'Strong Down',
   4: 'Weak Down',
   5: 'Stable',
   7: 'Weak Up',
   9: 'Strong Up'
 };
-let volatilities = [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5, 8];
-let volatilityPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
-let volatilityNames = {
+const volatilities = [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5, 8];
+const volatilityPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+const volatilityNames = {
   1: 'Very Low',
   2: 'Low',
   3: 'Medium',
@@ -42,7 +42,7 @@ let volatility;
 let volatilityPeriod;
 let interval;
 
-let chart = new Chart(ctx, {
+const chart = new Chart(ctx, {
   type: 'line',
   data: {
     labels: [],
@@ -94,7 +94,7 @@ let chart = new Chart(ctx, {
             change = 0;
             percentChange = 0;
           } else {
-            let prev = data.datasets[0].data[tooltipItem.index - 1];
+            const prev = data.datasets[0].data[tooltipItem.index - 1];
             change = tooltipItem.yLabel - prev;
             percentChange = Math.round(change / prev * 10000) / 100;
           }
@@ -140,11 +140,11 @@ function reset () {
 }
 
 function resetButtons () {
-  let playButton = document.getElementById('play');
+  const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'play()');
   playButton.setAttribute('accesskey', 'w');
   playButton.innerHTML = '<span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">W</span>atch';
-  let pauseButton = document.getElementById('pause');
+  const pauseButton = document.getElementById('pause');
   if (pauseButton != null) {
     pauseButton.parentNode.removeChild(pauseButton);
   }
@@ -157,11 +157,11 @@ function generate () {
 
 function play () {
   reset();
-  let playButton = document.getElementById('play');
+  const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'stop()');
   playButton.setAttribute('accesskey', 't');
   playButton.innerHTML = '<span class="glyphicon glyphicon-stop"></span> S<span style="text-decoration: underline">t</span>op';
-  let pauseButton = document.createElement('a');
+  const pauseButton = document.createElement('a');
   pauseButton.setAttribute('class', 'btn btn-lg btn-info');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
@@ -173,14 +173,14 @@ function play () {
 
 function pause () {
   window.clearInterval(interval);
-  let pauseButton = document.getElementById('pause');
+  const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'resume()');
   pauseButton.setAttribute('accesskey', 'r');
   pauseButton.innerHTML = '<span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">R</span>esume';
 }
 
 function resume () {
-  let pauseButton = document.getElementById('pause');
+  const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
   pauseButton.innerHTML = '<span class="glyphicon glyphicon-pause"></span> <span style="text-decoration: underline">P</span>ause';
@@ -221,7 +221,7 @@ function update () {
   if (currentDay++ % volatilityPeriod === 0) {
     updateVolatility();
   }
-  let change = currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10;
+  const change = currentPrice * baseChange * volatility * (Math.random() * (trend[1] - trend[0]) + trend[0]) / 10;
   currentPrice += change;
   if (currentPrice < minPrice) {
     currentPrice += Math.abs(change) * 2;
