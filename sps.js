@@ -4,12 +4,18 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let days = 250; // 250 trading days = 1 year
-let price = 50;
-let minPrice = 15;
-let maxPrice = 200;
-let baseChange = 0.01;
-let daysPerSecond = 3;
+const defaultDays = 250; // 250 trading days = 1 year
+const defaultPrice = 50;
+const defaultMinPrice = 15;
+const defaultMaxPrice = 200;
+const defaultBaseChange = 0.01;
+const defaultDaysPerSecond = 3;
+let days = defaultDays;
+let price = defaultPrice;
+let minPrice = defaultMinPrice;
+let maxPrice = defaultMaxPrice;
+let baseChange = defaultBaseChange;
+let daysPerSecond = defaultDaysPerSecond;
 const color = 'rgba(54, 162, 235, ';
 const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
 gradient.addColorStop(0, color + '0.8)');
@@ -109,14 +115,19 @@ const chart = new Chart(ctx, {
   }
 });
 
-document.getElementById('days').value = days;
-document.getElementById('price').value = price;
-document.getElementById('min').value = minPrice;
-document.getElementById('max').value = maxPrice;
-document.getElementById('change').value = baseChange;
-document.getElementById('daysPerSecond').value = daysPerSecond;
+resetInputs();
 generate();
+document.addEventListener('keyup', keyUpHandler);
 window.addEventListener('resize', resizeHandler);
+
+function resetInputs () {
+  document.getElementById('days').value = days;
+  document.getElementById('price').value = price;
+  document.getElementById('min').value = minPrice;
+  document.getElementById('max').value = maxPrice;
+  document.getElementById('change').value = baseChange;
+  document.getElementById('daysPerSecond').value = daysPerSecond;
+}
 
 window.save = function () {
   days = +document.getElementById('days').value;
@@ -242,6 +253,18 @@ function updateTrend () {
 function updateVolatility () {
   volatility = volatilities[Math.floor(Math.random() * volatilities.length)];
   volatilityPeriod = volatilityPeriods[Math.floor(Math.random() * volatilityPeriods.length)];
+}
+
+function keyUpHandler (e) {
+  if (e.keyCode === 82) {
+    days = defaultDays;
+    price = defaultPrice;
+    minPrice = defaultMinPrice;
+    maxPrice = defaultMaxPrice;
+    baseChange = defaultBaseChange;
+    daysPerSecond = defaultDaysPerSecond;
+    resetInputs();
+  }
 }
 
 function resizeHandler () {
