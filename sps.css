@@ -3,16 +3,16 @@
 }
 
 canvas {
-  background: #eeeeee;
+  background: #eee;
   display: block;
-}
-
-.buttons {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 input[type="number"] {
   width: 5em;
+}
+
+.btn-group-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }

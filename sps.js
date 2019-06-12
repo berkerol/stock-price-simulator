@@ -58,6 +58,7 @@ const chart = new Chart(ctx, {
       volatilities: [],
       backgroundColor: gradient,
       borderColor: color + '1.0)',
+      pointBorderColor: color + '1.0)',
       pointBackgroundColor: color + '1.0)'
     }]
   },
@@ -75,7 +76,7 @@ const chart = new Chart(ctx, {
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Time'
+          labelString: 'Date'
         }
       }],
       yAxes: [{
@@ -125,7 +126,7 @@ function resetInputs () {
   document.getElementById('price').value = price;
   document.getElementById('min').value = minPrice;
   document.getElementById('max').value = maxPrice;
-  document.getElementById('change').value = baseChange;
+  document.getElementById('change').value = baseChange * 100;
   document.getElementById('daysPerSecond').value = daysPerSecond;
 }
 
@@ -134,7 +135,7 @@ window.save = function () {
   price = +document.getElementById('price').value;
   minPrice = +document.getElementById('min').value;
   maxPrice = +document.getElementById('max').value;
-  baseChange = +document.getElementById('change').value;
+  baseChange = +document.getElementById('change').value / 100;
   daysPerSecond = +document.getElementById('daysPerSecond').value;
 };
 
@@ -154,7 +155,7 @@ function resetButtons () {
   const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'play()');
   playButton.setAttribute('accesskey', 'w');
-  playButton.innerHTML = '<span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">W</span>atch';
+  playButton.innerHTML = '<i class="fas fa-play"></i> <u>W</u>atch';
   const pauseButton = document.getElementById('pause');
   if (pauseButton != null) {
     pauseButton.parentNode.removeChild(pauseButton);
@@ -171,13 +172,14 @@ window.play = function () {
   const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'stop()');
   playButton.setAttribute('accesskey', 't');
-  playButton.innerHTML = '<span class="glyphicon glyphicon-stop"></span> S<span style="text-decoration: underline">t</span>op';
-  const pauseButton = document.createElement('a');
-  pauseButton.setAttribute('class', 'btn btn-lg btn-info');
+  playButton.innerHTML = '<i class="fas fa-stop"></i> S<u>t</u>op';
+  const pauseButton = document.createElement('button');
+  pauseButton.setAttribute('type', 'button');
+  pauseButton.setAttribute('class', 'btn btn-info');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
   pauseButton.setAttribute('id', 'pause');
-  pauseButton.innerHTML = '<span class="glyphicon glyphicon-pause"></span> <span style="text-decoration: underline">P</span>ause';
+  pauseButton.innerHTML = '<i class="fas fa-pause"></i> <u>P</u>ause';
   playButton.parentNode.insertBefore(pauseButton, playButton);
   animate();
 };
@@ -187,14 +189,14 @@ window.pause = function () {
   const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'resume()');
   pauseButton.setAttribute('accesskey', 'r');
-  pauseButton.innerHTML = '<span class="glyphicon glyphicon-play"></span> <span style="text-decoration: underline">R</span>esume';
+  pauseButton.innerHTML = '<i class="fas fa-play"></i> <u>R</u>esume';
 };
 
 window.resume = function () {
   const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
-  pauseButton.innerHTML = '<span class="glyphicon glyphicon-pause"></span> <span style="text-decoration: underline">P</span>ause';
+  pauseButton.innerHTML = '<i class="fas fa-pause"></i> <u>P</u>ause';
   animate();
 };
 
