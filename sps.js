@@ -1,28 +1,4 @@
-/* global Chart */
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const defaultDays = 250; // 250 trading days = 1 year
-const defaultPrice = 50;
-const defaultMinPrice = 15;
-const defaultMaxPrice = 200;
-const defaultBaseChange = 0.01;
-const defaultDaysPerSecond = 3;
-let days = defaultDays;
-let price = defaultPrice;
-let minPrice = defaultMinPrice;
-let maxPrice = defaultMaxPrice;
-let baseChange = defaultBaseChange;
-let daysPerSecond = defaultDaysPerSecond;
-const color = 'rgba(54, 162, 235, ';
-const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-gradient.addColorStop(0, color + '0.8)');
-gradient.addColorStop(1, color + '0.0)');
-
-const trends = [[-9, 3], [-7, 4], [-7, 4], [-5, 5], [-5, 5], [-5, 5], [-4, 7], [-4, 7], [-3, 9]];
-const trendPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
+/* global Chart createButton createButtonGroup createModalButton createModal keyUpHandler canvas ctx defaultDays defaultPrice defaultMinPrice defaultMaxPrice defaultBaseChange defaultDaysPerSecond color gradient days:writable price:writable minPrice:writable maxPrice:writable baseChange:writable daysPerSecond:writable currentDay:writable currentPrice:writable trend trendPeriod volatility volatilityPeriod interval:writable updateTrend updateVolatility resizeHandler */
 const trendNames = {
   3: 'Strong Down',
   4: 'Weak Down',
@@ -30,8 +6,6 @@ const trendNames = {
   7: 'Weak Up',
   9: 'Strong Up'
 };
-const volatilities = [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5, 8];
-const volatilityPeriods = [5, 10, 10, 20, 20, 20, 60, 60, 120]; // 20 trading days = 1 month
 const volatilityNames = {
   1: 'Very Low',
   2: 'Low',
@@ -40,13 +14,13 @@ const volatilityNames = {
   8: 'Very High'
 };
 
-let currentDay;
-let currentPrice;
-let trend;
-let trendPeriod;
-let volatility;
-let volatilityPeriod;
-let interval;
+const modalElements = [[['Total Days', 'days', 3, 999, 'number'], ['Possible Min Price', 'min', 1, 9999, 'number'], ['Base Change', 'change', 0, 100, 'number']], [['Initial Price', 'price', 1, 9999, 'number'], ['Possible Max Price', 'max', 1, 9999, 'number'], ['Days/Second', 'daysPerSecond', 1, 9, 'number']]];
+const buttonElements = [['info', 'generate()', 'g', 'sync', '<u>G</u>enerate'], ['info', 'play()', 'w', 'play', '<u>W</u>atch'], ['info', '', 's', 'cog', '<u>S</u>ettings']];
+const buttonGroup = createButtonGroup('btn-group btn-group-lg btn-group-center', buttonElements);
+const playButton = buttonGroup.children[1];
+const pauseButton = createButton('info', 'pause()', 'p', 'pause', '<u>P</u>ause');
+document.body.insertBefore(createModalButton(buttonGroup, 2), canvas);
+createModal(modalElements);
 
 const chart = new Chart(ctx, {
   type: 'line',
@@ -122,6 +96,12 @@ document.addEventListener('keyup', keyUpHandler);
 window.addEventListener('resize', resizeHandler);
 
 function resetInputs () {
+  days = defaultDays;
+  price = defaultPrice;
+  minPrice = defaultMinPrice;
+  maxPrice = defaultMaxPrice;
+  baseChange = defaultBaseChange;
+  daysPerSecond = defaultDaysPerSecond;
   document.getElementById('days').value = days;
   document.getElementById('price').value = price;
   document.getElementById('min').value = minPrice;
@@ -152,13 +132,11 @@ function reset () {
 }
 
 function resetButtons () {
-  const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'play()');
   playButton.setAttribute('accesskey', 'w');
   playButton.innerHTML = '<i class="fas fa-play"></i> <u>W</u>atch';
-  const pauseButton = document.getElementById('pause');
-  if (pauseButton != null) {
-    pauseButton.parentNode.removeChild(pauseButton);
+  if (buttonGroup.contains(pauseButton)) {
+    buttonGroup.removeChild(pauseButton);
   }
 }
 
@@ -169,31 +147,21 @@ function generate () {
 
 window.play = function () {
   reset();
-  const playButton = document.getElementById('play');
   playButton.setAttribute('onclick', 'stop()');
   playButton.setAttribute('accesskey', 't');
   playButton.innerHTML = '<i class="fas fa-stop"></i> S<u>t</u>op';
-  const pauseButton = document.createElement('button');
-  pauseButton.setAttribute('type', 'button');
-  pauseButton.setAttribute('class', 'btn btn-info');
-  pauseButton.setAttribute('onclick', 'pause()');
-  pauseButton.setAttribute('accesskey', 'p');
-  pauseButton.setAttribute('id', 'pause');
-  pauseButton.innerHTML = '<i class="fas fa-pause"></i> <u>P</u>ause';
-  playButton.parentNode.insertBefore(pauseButton, playButton);
+  buttonGroup.insertBefore(pauseButton, playButton);
   animate();
 };
 
 window.pause = function () {
   window.clearInterval(interval);
-  const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'resume()');
   pauseButton.setAttribute('accesskey', 'r');
   pauseButton.innerHTML = '<i class="fas fa-play"></i> <u>R</u>esume';
 };
 
 window.resume = function () {
-  const pauseButton = document.getElementById('pause');
   pauseButton.setAttribute('onclick', 'pause()');
   pauseButton.setAttribute('accesskey', 'p');
   pauseButton.innerHTML = '<i class="fas fa-pause"></i> <u>P</u>ause';
@@ -245,33 +213,4 @@ function update () {
   chart.data.datasets[0].data.push(currentPrice);
   chart.data.datasets[0].trends.push(trend);
   chart.data.datasets[0].volatilities.push(volatility);
-}
-
-function updateTrend () {
-  trend = trends[Math.floor(Math.random() * trends.length)];
-  trendPeriod = trendPeriods[Math.floor(Math.random() * trendPeriods.length)];
-}
-
-function updateVolatility () {
-  volatility = volatilities[Math.floor(Math.random() * volatilities.length)];
-  volatilityPeriod = volatilityPeriods[Math.floor(Math.random() * volatilityPeriods.length)];
-}
-
-function keyUpHandler (e) {
-  if (e.keyCode === 82) {
-    days = defaultDays;
-    price = defaultPrice;
-    minPrice = defaultMinPrice;
-    maxPrice = defaultMaxPrice;
-    baseChange = defaultBaseChange;
-    daysPerSecond = defaultDaysPerSecond;
-    resetInputs();
-  }
-}
-
-function resizeHandler () {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  chart.resize();
-  chart.update();
 }
